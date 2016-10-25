@@ -372,7 +372,17 @@ class rest_api_handler(object):
         r = requests.get(self.off_cmd)
         return r.status_code == 200
 
-
+class IO_handler(object):
+    def __init__(self, on_cmd, off_cmd):
+      self.on_cmd = on_cmd
+      self.off_cmd = off_cmd
+    def on(self):
+      
+      return r.status_code == 200
+    def off(self):
+      
+      return r.status_code == 200
+      
 # Each entry is a list with the following elements:
 #
 # name of the virtual switch
