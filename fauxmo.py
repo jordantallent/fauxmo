@@ -394,8 +394,9 @@ class IO_handler(object):
 # list will be used.
 
 FAUXMOS = [
-    ['office lights', rest_api_handler('http://192.168.5.4/ha-api?cmd=on&a=office', 'http://192.168.5.4/ha-api?cmd=off&a=office')],
-    ['kitchen lights', rest_api_handler('http://192.168.5.4/ha-api?cmd=on&a=kitchen', 'http://192.168.5.4/ha-api?cmd=off&a=kitchen')],
+    ['Office Lights', IO_handler(9, 9)],
+    ['Master Fan', IO_handler(10, 10)],
+    ['Master Light', IO_handler(10, 10)],
 ]
 
 
