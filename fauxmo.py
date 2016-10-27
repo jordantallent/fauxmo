@@ -35,7 +35,7 @@ import sys
 import time
 import urllib
 import uuid
-
+import RPi.GPIO as GPIO
 
 
 # This XML is the minimum needed to define one of our virtual switches
@@ -373,16 +373,23 @@ class rest_api_handler(object):
         return r.status_code == 200
 
 class IO_handler(object):
+
     def __init__(self, on_cmd, off_cmd):
-      self.on_cmd = on_cmd
-      self.off_cmd = off_cmd
+    	  self.on_cmd = on_cmd
+        self.off_cmd = off_cmd
     def on(self):
-      
-      return r.status_code == 200
+        #enter on control here
+        GPIO.setup(int(self.on_cmd), GPIO.OUT)
+        GPIO.output(int(self.on_cmd), GPIO.LOW) #low will turn on relay module
+      #	dbg(int(self.on_cmd))
+        return 1
     def off(self):
-      
-      return r.status_code == 200
-      
+        #enter off control here 
+        GPIO.setup(int(self.off_cmd), GPIO.OUT)
+        GPIO.output(int(self.off_cmd), GPIO.HIGH) #high will turn off relay module  
+      #	dbg(int(self.off_cmd))
+        return 1
+
 # Each entry is a list with the following elements:
 #
 # name of the virtual switch
@@ -394,9 +401,9 @@ class IO_handler(object):
 # list will be used.
 
 FAUXMOS = [
-    ['Office Lights', IO_handler(9, 9)],
-    ['Master Fan', IO_handler(10, 10)],
-    ['Master Light', IO_handler(10, 10)],
+    ['Office Lights', IO_handler(11, 11), 5200],
+    ['Master Fan', IO_handler(13, 13), 5201],
+    ['Master Light', IO_handler(15, 15), 5202],
 ]
 
 
@@ -422,8 +429,10 @@ for one_faux in FAUXMOS:
     switch = fauxmo(one_faux[0], u, p, None, one_faux[2], action_handler = one_faux[1])
 
 dbg("Entering main loop\n")
-
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
 while True:
+	
     try:
         # Allow time for a ctrl-c to stop the process
         p.poll(100)
@@ -431,4 +440,5 @@ while True:
     except Exception, e:
         dbg(e)
         break
+
 
