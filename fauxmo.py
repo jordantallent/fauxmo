@@ -237,6 +237,7 @@ class fauxmo(upnp_device):
             if data.find('<BinaryState>1</BinaryState>') != -1:
                 # on
                 dbg("Responding to ON for %s" % self.name)
+		dbg(sender)
                 success = self.action_handler.on()
             elif data.find('<BinaryState>0</BinaryState>') != -1:
                 # off
@@ -363,30 +364,24 @@ class rest_api_handler(object):
     def __init__(self, on_cmd, off_cmd):
         self.on_cmd = on_cmd
         self.off_cmd = off_cmd
-
     def on(self):
         r = requests.get(self.on_cmd)
         return r.status_code == 200
-
     def off(self):
         r = requests.get(self.off_cmd)
         return r.status_code == 200
 
 class IO_handler(object):
-
-    def __init__(self, on_cmd, off_cmd):
-    	  self.on_cmd = on_cmd
-        self.off_cmd = off_cmd
+    def __init__(self, pinNumber):
+    	  GPIO.setup(pinNumber, GPIO.OUT)
     def on(self):
         #enter on control here
-        GPIO.setup(int(self.on_cmd), GPIO.OUT)
-        GPIO.output(int(self.on_cmd), GPIO.LOW) #low will turn on relay module
+        GPIO.output(pinNumber, GPIO.LOW) #low will turn on relay module
       #	dbg(int(self.on_cmd))
         return 1
     def off(self):
         #enter off control here 
-        GPIO.setup(int(self.off_cmd), GPIO.OUT)
-        GPIO.output(int(self.off_cmd), GPIO.HIGH) #high will turn off relay module  
+        GPIO.output(pinNumber, GPIO.HIGH) #high will turn off relay module  
       #	dbg(int(self.off_cmd))
         return 1
 
@@ -401,9 +396,9 @@ class IO_handler(object):
 # list will be used.
 
 FAUXMOS = [
-    ['Office Lights', IO_handler(11, 11), 5200],
-    ['Master Fan', IO_handler(13, 13), 5201],
-    ['Master Light', IO_handler(15, 15), 5202],
+    ['Office Lights', IO_handler(11), 5200],
+    ['Master Fan', IO_handler(13), 5201],
+    ['Master Light', IO_handler(15), 5202],
 ]
 
 
