@@ -217,7 +217,7 @@ class fauxmo(upnp_device):
         return self.name
 
     def handle_request(self, data, sender, socket):
-        if data.find('GET /setup.xml HTTP/1.1') == 0:
+	if data.find('GET /setup.xml HTTP/1.1') == 0:
             dbg("Responding to setup.xml for %s" % self.name)
             xml = SETUP_XML % {'device_name' : self.name, 'device_serial' : self.serial}
             date_str = email.utils.formatdate(timeval=None, localtime=False, usegmt=True)
@@ -233,6 +233,7 @@ class fauxmo(upnp_device):
                        "%s" % (len(xml), date_str, xml))
             socket.send(message)
         elif data.find('SOAPACTION: "urn:Belkin:service:basicevent:1#SetBinaryState"') != -1:
+		self.action_handler.echoIP = client_address[0]
             success = False
             if data.find('<BinaryState>1</BinaryState>') != -1:
                 # on
@@ -372,6 +373,8 @@ class rest_api_handler(object):
         return r.status_code == 200
 
 class IO_handler(object):
+	echoIP
+	dbg(echoIP)
     def __init__(self, pinNumber):
     	  GPIO.setup(pinNumber, GPIO.OUT)
     def on(self):
